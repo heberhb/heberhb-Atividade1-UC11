@@ -1,6 +1,6 @@
 Nome do projeto : 
 
-            Projeto Inicial
+            
 
 Explicação sobre o que se trata o projeto : 
 
