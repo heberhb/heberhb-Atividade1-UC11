@@ -10,20 +10,19 @@
 
 import java.sql.PreparedStatement;
 import java.sql.Connection;
-import javax.swing.JOptionPane;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
 public class ProdutosDAO {
-    private conectaDAO conexao;
-    private Connection conn;
+    private final conectaDAO conexao;
+    private final Connection conn;
     PreparedStatement ps;
     ResultSet rs;
-    ArrayList<ProdutosDTO> listagem = new ArrayList<>();
     
     public ProdutosDAO(){
         this.conexao = new conectaDAO();
@@ -46,13 +45,37 @@ public class ProdutosDAO {
         }
     }
     
-    public ArrayList<ProdutosDTO> listarProdutos(){
+    public List<ProdutosDTO> listarProdutos(){
+        String sql = "SELECT*FROM produtos";
+        try{
+            ps = this.conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            
+            List<ProdutosDTO> lista = new ArrayList<>();
+            
+            while(rs.next()){
+                ProdutosDTO produto = new ProdutosDTO();
+                produto.setId(rs.getInt("id"));
+                produto.setNome(rs.getString("nome"));
+                produto.setValor(rs.getInt("valor"));
+                produto.setStatus(rs.getString("status"));
+                lista.add(produto);
+            }
+            System.out.println("Lista de Produtos Carregada");
+            return lista;
+        }catch (SQLException ex) {
+            System.out.println("Erro ao buscar lista produtos");
+            return null;
+        }finally {
+        try {
+            if (rs != null) rs.close();
+            if (ps != null) ps.close();
+            if (this.conn != null) this.conn.close(); // Correção: Use `this.conn`
+        } catch (SQLException ex) {
+            System.out.println("Erro ao fechar recursos: " + ex.getMessage());
+        }
         
-        return listagem;
+      }
     }
-    
-    
-    
-        
 }
 
